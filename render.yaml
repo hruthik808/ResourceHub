@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: resourcehub-backend
+    runtime: java
+    repo: https://github.com/hruthik808/ResourceHub
+    branch: main
+    rootDir: backend/student-resource-reuse
+    buildCommand: ./mvnw clean install
+    startCommand: java -jar target/*.jar
