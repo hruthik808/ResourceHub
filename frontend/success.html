@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Success</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      padding: 50px;
+    }
+
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🎉 Payment Successful</h2>
+  <p>Your order has been placed!</p>
+
+  <button class="btn" onclick="goHome()">Go Home</button>
+</div>
+
+<script>
+function goHome() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

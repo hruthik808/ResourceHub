@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Login</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f2f5;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1000px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+
+        /* LEFT SIDE */
+        .left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 15px 40px;
+            height: 100%;
+        }
+
+        .left h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #7c3aed, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .switch {
+            margin-top: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #3b82f6;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        /* RIGHT SIDE */
+        .right {
+            flex: 1;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            text-align: center;
+        }
+
+        .left input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .right h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .right p {
+            opacity: 0.9;
+        }
+
+        #title {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LEFT -->
+        <div class="left">
+            <h2 id="title">Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="text" id="email" placeholder="Email">
+            <div style="position: relative; width: 100%;">
+
+                <input type="password" id="password" placeholder="Password"
+                    style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box;">
+
+                <i class="fa-solid fa-eye" onclick="togglePassword('password', this)"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                </i>
+            </div>
+
+            <p id="error" class="error"></p>
+
+            <button type="button" onclick="handleAuth()">Login</button>
+
+            <p class="switch" onclick="toggleMode()">
+                Don't have an account? Create
+            </p>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+            <div style="text-align:center; color:white;">
+
+                <h1 style="font-size:32px; font-weight:bold; margin-bottom:10px;">
+                    📚 ResourceHub
+                </h1>
+
+                <h2 style="margin-bottom:10px;">Welcome Back!</h2>
+
+                <p style="opacity:0.9;">
+                    Login or create account to continue
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        let isLogin = true;
+
+        function toggleMode() {
+            isLogin = !isLogin;
+
+            document.getElementById("title").innerText = isLogin ? "Login" : "Create Account";
+            document.querySelector("button").innerText = isLogin ? "Login" : "Sign Up";
+
+            // SHOW username only in signup
+            document.getElementById("username").style.display = isLogin ? "none" : "block";
+        }
+        function handleAuth() {
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            const error = document.getElementById("error");
+
+            error.innerText = "";
+
+            if (email === "" || pass === "" || (!isLogin && username === "")) {
+                error.innerText = "Fill all fields ❗";
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            if (isLogin) {
+                // LOGIN
+                const user = users.find(u => u.email === email && u.pass === pass);
+
+                if (user) {
+                    localStorage.setItem("loggedIn", "true");
+                    localStorage.setItem("name", username);
+                    localStorage.setItem("currentUser", user.username || user.email);
+
+                    let loggedUsers = JSON.parse(localStorage.getItem("loggedUsers")) || [];
+
+                    if (!loggedUsers.includes(username)) {
+                        loggedUsers.push(username);
+                        localStorage.setItem("loggedUsers", JSON.stringify(loggedUsers));
+                    }
+
+
+
+                    window.location.href = "index.html";
+                } else {
+                    error.innerText = "Invalid login ❌";
+                }
+
+            } else {
+                // SIGNUP
+                const exists = users.find(u => u.email === email);
+
+                if (exists) {
+                    error.innerText = "User already exists ❗";
+                    return;
+                }
+
+                users.push({ username, email, pass });
+
+                localStorage.setItem("users", JSON.stringify(users));
+
+                error.innerText = "Account created ✅ Now login!";
+                toggleMode();
+            }
+        }
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

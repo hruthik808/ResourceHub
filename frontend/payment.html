@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Payment</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .pay-btn {
+            width: 90%;
+            max-width: 350px;
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pay-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .upi-btn {
+            width: 90%;
+            max-width: 350px;
+            background: #4caf50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upi-btn:hover {
+            background: #43a047;
+            /* darker green */
+            transform: scale(1.05);
+            /* zoom effect */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .payment-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .payment-container {
+            display: flex;
+            gap: 30px;
+            width: 900px;
+        }
+
+        input {
+            width: 90%;
+            max-width: 350px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 5px rgba(79, 172, 254, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .payment-card {
+            gap: 10px;
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>💳 Payment</h2>
+
+    <div class="payment-container">
+
+        <!-- LEFT: PAYMENT -->
+        <div class="payment-card">
+            <h3>Card Payment</h3>
+
+            <input id="name" type="text" placeholder="Card Holder Name">
+            <small id="cardError" style="color:red;"></small>
+            <input id="card" type="text" placeholder="Card Number">
+            <input id="expiry" type="text" placeholder="Expiry Date">
+            <input id="cvv" type="text" placeholder="CVV">
+
+
+
+            <button class="pay-btn" onclick="payNow('card')">Pay Now</button>
+            <hr>
+
+            <h3>UPI Payment</h3>
+
+            <input id="upi" type="text" placeholder="Enter UPI ID">
+
+
+            <button class="upi-btn" onclick="payNow('upi')">Pay via UPI</button>
+
+        </div>
+
+        <!-- RIGHT: ORDER SUMMARY -->
+        <div class="payment-card">
+            <h3>Order Summary</h3>
+
+            <div id="orderItems"></div>
+
+            <h3>Total: ₹ <span id="totalAmount">0</span></h3>
+        </div>
+
+    </div>
+
+    <script>
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function loadOrder() {
+            const container = document.getElementById("orderItems");
+
+            let total = 0;
+
+            cart.forEach(item => {
+                container.innerHTML += `
+      <p>${item.title} - ₹ ${item.price}</p>
+    `;
+
+                total += item.price;
+            });
+
+            document.getElementById("totalAmount").innerText = total;
+        }
+
+        function payNow(type) {
+
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            // 🚨 check empty cart
+            if (cart.length === 0) {
+                alert("Cart is empty ❌");
+                return;
+            }
+
+            if (type === "card") {
+
+                const name = document.getElementById("name").value.trim();
+                const card = document.getElementById("card").value.trim();
+                const expiry = document.getElementById("expiry").value.trim();
+                const cvv = document.getElementById("cvv").value.trim();
+
+                if (!name || !card || !expiry || !cvv) {
+                    alert("Please fill all card details ❌");
+                    return;
+                }
+
+                if (card.length < 12) {
+                    alert("Invalid card number ❌");
+                    return;
+                }
+
+                if (cvv.length < 3) {
+                    alert("Invalid CVV ❌");
+                    return;
+                }
+
+            }
+
+            if (type === "upi") {
+
+                const upi = document.getElementById("upi").value.trim();
+
+                if (!upi) {
+                    alert("Enter UPI ID ❌");
+                    return;
+                }
+            }
+
+            // ✅ SUCCESS
+            alert("Payment Successful ✅");
+
+            localStorage.removeItem("cart");
+
+            window.location.href = "success.html";
+        }
+
+        loadOrder();
+
+    </script>
+
+</body>
+
+</html>
