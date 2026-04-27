@@ -3,5 +3,5 @@ services:
     name: resourcehub-backend
     env: java
     rootDir: backend/student-resource-reuse
-    buildCommand: "chmod +x mvnw && ./mvnw clean install"
+    buildCommand: "mvn clean install"
     startCommand: "java -jar target/*.jar"
