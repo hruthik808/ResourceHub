@@ -1,8 +1,7 @@
 services:
   - type: web
     name: resourcehub-backend
-    env: docker
-    repo: https://github.com/hruthik808/ResourceHub
-    branch: main
+    env: java
     rootDir: backend/student-resource-reuse
-    dockerfilePath: ./backend/student-resource-reuse/Dockerfile
+    buildCommand: "./mvnw clean install"
+    startCommand: "java -jar target/*.jar"
